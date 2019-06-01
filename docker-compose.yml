@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    image: traefik # The official Traefik docker image
+    ports:
+      - '80:80' # The HTTP port
+      - '443:443' # The HTTPS port
+      - '8080:8080' # The Web UI (enabled by --api)
+    environment:
+      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
+      - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}
+    networks:
+      - default
+      - traefik-net
+    volumes:
+      - ./traefik.toml:/etc/traefik/traefik.toml
+      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+
+  whoami:
+    image: containous/whoami # A container that exposes an API to show its IP address
+    networks:
+      - default
+      - traefik-net
+    deploy:
+      labels:
+        - traefik.port=80
+        - traefik.docker.network=traefik-net
+        - traefik.frontend.rule=Host:${SWARMON_WHOAMI_HOST}
+
+  api:
+    image: simonvadee/swarmon:latest
+    networks:
+      - default
+      - traefik-net
+    deploy:
+      labels:
+        - traefik.port=8080
+        - traefik.docker.network=traefik-net
+        - traefik.frontend.rule=Host:${SWARMON_API_HOST}
+
+networks:
+  traefik-net:
+    external: true
