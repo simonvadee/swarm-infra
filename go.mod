@@ -1,4 +1,4 @@
-module github.com/simonvadee/swarm-infra
+module github.com/simonvadee/swarmon
 
 go 1.12
 

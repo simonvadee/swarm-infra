@@ -1,2 +1,2 @@
-# swarm-infra
+# swarmon
 Infrastructure boilerplate for swarm cluster
