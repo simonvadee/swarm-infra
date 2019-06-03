@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -12,8 +13,19 @@ type API struct {
 }
 
 func (a *API) home(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	resp, err := http.Get("http://whoami/")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hello world!"))
+	w.Write(b)
 }
 
 func main() {

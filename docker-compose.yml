@@ -29,7 +29,7 @@ services:
         - traefik.frontend.rule=Host:${SWARMON_WHOAMI_HOST}
 
   api:
-    image: simonvadee/swarmon:latest
+    image: simonvadee/swarmon-api:latest
     networks:
       - default
       - traefik-net
