@@ -9,13 +9,14 @@ action "Docker Registry" {
 }
 
 action "Shell" {
+  needs = "Docker Registry"
   uses = "actions/bin/sh@master"
   args = ["ls -l"]
 }
 
 action "Build" {
   needs = "Shell"
-  uses = "actions/bin/sh@master"
+  uses = "actions/action-builder/shell@master"
   runs = "make"
   args = "build"
 }
