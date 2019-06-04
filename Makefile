@@ -19,3 +19,7 @@ publish: $(IMAGES)
 
 $(IMAGES): %:
 	docker push $@:latest
+
+# == test ====================================================================
+test:
+	echo 'test'
