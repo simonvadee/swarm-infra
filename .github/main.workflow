@@ -1,6 +1,6 @@
 workflow "Build and publish to DockerHub" {
   on = "push"
-  resolves = ["Publish"]
+  resolves = ["Build", "Publish"]
 }
 
 action "Docker Registry" {
@@ -15,14 +15,13 @@ action "Build" {
   args = "build"
 }
 
-# Filter for master branch
 action "Filter" {
   uses = "actions/bin/filter@master"
   args = "branch master"
 }
 
 action "Publish" {
-  needs = ["Filter"]
+  needs = ["Build", "Filter"]
   uses = "docker://simonvadee/action-docker-service:latest"
   runs = "make"
   args = "publish"
