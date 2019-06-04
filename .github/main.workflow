@@ -1,6 +1,6 @@
 workflow "Build and publish to DockerHub" {
   on = "push"
-  resolves = ["Build"]
+  resolves = ["Build services docker images"]
 }
 
 action "Docker Registry" {
@@ -14,17 +14,19 @@ action "Shell" {
   args = ["ls -l"]
 }
 
-action "Build" {
+# action "Build" {
+#   needs = "Shell"
+#   uses = "actions/action-builder/shell@master"
+#   runs = "make"
+#   args = "build"
+# }
+
+action "Build services docker images" {
   needs = "Shell"
-  uses = "actions/action-builder/shell@master"
-  runs = "make"
+  needs = "Docker Registry"
+  uses = "./.github/build-docker-images/"
   args = "build"
 }
-
-# action "Build services docker images" {
-#   needs = "Docker Registry"
-#   uses = "./.github/build-docker-images/"
-# }
 
 # action "Publish services docker images" {
 #   needs = "Build services docker images"
