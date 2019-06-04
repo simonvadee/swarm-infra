@@ -15,8 +15,14 @@ action "Build" {
   args = "build"
 }
 
+# Filter for master branch
+action "Filter" {
+  uses = "actions/bin/filter@master"
+  args = "branch master"
+}
+
 action "Publish" {
-  needs = ["Build"]
+  needs = ["Filter"]
   uses = "docker://simonvadee/action-docker-service:latest"
   runs = "make"
   args = "publish"
