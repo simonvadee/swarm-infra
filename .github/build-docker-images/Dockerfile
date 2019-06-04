@@ -32,4 +32,4 @@ RUN add-apt-repository \
     docker-ce-cli \
     containerd.io
 
-ENTRYPOINT ["/bin/make"]
+ENTRYPOINT ["make"]
