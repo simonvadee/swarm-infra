@@ -11,7 +11,7 @@ build: $(SERVICES)
 
 SVC=$(word 2, $(subst /, ,$@))
 
-$(SERVICES): $(SERVICES)/Dockerfile
+$(SERVICES): %:
 	docker build -t $(DOCKER_REGISTRY)-$(SVC) -f $@/Dockerfile $@
 
 # == publish ====================================================================

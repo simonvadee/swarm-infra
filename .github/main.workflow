@@ -23,14 +23,14 @@ action "Shell" {
 
 action "Test" {
   needs = ["Shell"]
-  uses = "./.github/build-docker-images/"
+  uses = "actions/action-builder/docker@master"
   runs = "make"
   args = "test"
 }
 
 action "Build services docker images" {
   needs = ["Test"]
-  uses = "./.github/build-docker-images/"
+  uses = "actions/action-builder/docker@master"
   runs = "make"
   args = "build"
 }
