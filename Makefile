@@ -1,24 +1,32 @@
-DOCKER_REGISTRY=simonvadee/swarmon
+PROJECT=swarmon
+DOCKER_USER=simonvadee
+BASE_DOCKER_IMAGE=$(DOCKER_USER)/$(PROJECT)
 
 SERVICES=$(shell ls -d services/*)
-IMAGES=$(foreach service, $(SERVICES), $(DOCKER_REGISTRY)-$(word 2, $(subst /, ,$(service))))
+BUILD_IMAGES=$(foreach service, $(SERVICES), build_docker_image_$(service))
+PUBLISH_IMAGES=$(foreach service, $(SERVICES), publish_docker_image_$(service))
+
 
 # == all ======================================================================
 all: build
 
 # == build ====================================================================
-build: $(SERVICES)
+build: $(BUILD_IMAGES)
 
 SVC=$(word 2, $(subst /, ,$@))
+DOCKER_IMAGE=$(BASE_DOCKER_IMAGE)-$(SVC)
 
-$(SERVICES): %:
-	docker build -t $(DOCKER_REGISTRY)-$(SVC) -f $@/Dockerfile $@
+$(BUILD_IMAGES): build_docker_image_%: %/Dockerfile
+	docker build -t $(DOCKER_IMAGE):latest -f $*/Dockerfile $*
 
 # == publish ====================================================================
-publish: $(IMAGES)
+publish: $(PUBLISH_IMAGES)
 
-$(IMAGES): %:
-	docker push $@:latest
+SVC=$(word 2, $(subst /, ,$@))
+DOCKER_IMAGE=$(BASE_DOCKER_IMAGE)-$(SVC)
+
+$(PUBLISH_IMAGES): publish_docker_image_%: %/Dockerfile
+	docker push $(DOCKER_IMAGE):latest
 
 # == test ====================================================================
 test:
