@@ -27,6 +27,9 @@ RUN add-apt-repository \
     $(lsb_release -cs) \
     stable" \
     && apt-get update \
-    && apt-get install docker-ce docker-ce-cli containerd.io
+    && apt-get install --no-install-recommends -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io
 
 ENTRYPOINT ["/bin/make"]
