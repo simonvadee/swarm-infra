@@ -22,8 +22,7 @@ action "Shell" {
 # }
 
 action "Build services docker images" {
-  needs = "Shell"
-  needs = "Docker Registry"
+  needs = ["Shell"]
   uses = "./.github/build-docker-images/"
   args = "build"
 }
