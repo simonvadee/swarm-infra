@@ -19,9 +19,3 @@ publish: $(IMAGES)
 
 $(IMAGES): %:
 	docker push $@:latest
-
-# == deploy ====================================================================
-deploy: $(IMAGES)
-
-$(IMAGES): %:
-	docker push $@:latest
