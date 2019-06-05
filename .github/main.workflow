@@ -10,7 +10,7 @@ action "Docker Registry" {
 
 action "Build" {
   needs = ["Docker Registry"]
-  uses = "docker://simonvadee/action-docker-service:latest"
+  uses = "docker://simonvadee/action-make-docker:latest"
   runs = "make"
   args = "build"
 }
@@ -23,13 +23,13 @@ action "Filter" {
 
 action "Publish" {
   needs = ["Filter"]
-  uses = "docker://simonvadee/action-docker-service:latest"
+  uses = "docker://simonvadee/action-make-docker:latest"
   runs = "make"
   args = "publish"
 }
 
 action "Deploy" {
-  uses = "actions/bin/sh@master"
+  uses = "docker://simonvadee/action-shell:latest"
   secrets = ["DEPLOYMENT_KEY", "DEPLOYMENT_USER", "DEPLOYMENT_HOST"]
   args = [
     "echo $DEPLOYMENT_KEY > id_rsa",
