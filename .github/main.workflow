@@ -1,6 +1,6 @@
-workflow "Build and publish to DockerHub" {
+workflow "Build, publish to DockerHub and deploy to Docker Swarm cluster" {
   on = "push"
-  resolves = ["Deploy", "Publish"]
+  resolves = ["Deploy"]
 }
 
 action "Docker Registry" {
@@ -29,6 +29,7 @@ action "Publish" {
 }
 
 action "Deploy" {
+  needs = ["Publish"]
   uses = "docker://simonvadee/action-shell:latest"
   secrets = ["DEPLOYMENT_KEY", "DEPLOYMENT_USER", "DEPLOYMENT_HOST"]
   args = [
