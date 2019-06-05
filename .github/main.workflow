@@ -32,7 +32,7 @@ action "Deploy" {
   uses = "docker://simonvadee/action-shell:latest"
   secrets = ["DEPLOYMENT_KEY", "DEPLOYMENT_USER", "DEPLOYMENT_HOST"]
   args = [
-    "echo $DEPLOYMENT_KEY | base64 -d > id_rsa",
+    "echo $DEPLOYMENT_KEY | base64 -d > id_rsa && chmod 400 id_rsa",
     "scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -v -i id_rsa ./docker-compose.yml $DEPLOYMENT_USER@$DEPLOYMENT_HOST:/home/$DEPLOYMENT_USER/stack.yml",
     "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i id_rsa $DEPLOYMENT_USER@$DEPLOYMENT_HOST 'docker stack deploy -c stack.yml '"
   ]
