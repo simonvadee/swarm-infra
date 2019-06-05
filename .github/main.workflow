@@ -35,6 +35,7 @@ action "Deploy" {
   args = [
     "echo $DEPLOYMENT_KEY | base64 -d > id_rsa && chmod 400 id_rsa",
     "scp -o StrictHostKeyChecking=no -v -i id_rsa ./docker-compose.yml $DEPLOYMENT_USER@$DEPLOYMENT_HOST:/home/$DEPLOYMENT_USER/stack.yml",
+    "scp -o StrictHostKeyChecking=no -v -i id_rsa ./traefik.yml $DEPLOYMENT_USER@$DEPLOYMENT_HOST:/home/$DEPLOYMENT_USER/traefik.yml",
     "ssh -o StrictHostKeyChecking=no -i id_rsa $DEPLOYMENT_USER@$DEPLOYMENT_HOST 'docker stack deploy -c stack.yml swarmon'"
   ]
 }
