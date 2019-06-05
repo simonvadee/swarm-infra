@@ -1,6 +1,6 @@
 workflow "Build and publish to DockerHub" {
   on = "push"
-  resolves = ["Publish"]
+  resolves = ["Deploy", "Publish"]
 }
 
 action "Docker Registry" {
@@ -26,4 +26,14 @@ action "Publish" {
   uses = "docker://simonvadee/action-docker-service:latest"
   runs = "make"
   args = "publish"
+}
+
+action "Deploy" {
+  uses = "actions/bin/sh@master"
+  secrets = ["DEPLOYMENT_KEY", "DEPLOYMENT_USER", "DEPLOYMENT_HOST"]
+  args = [
+    "echo $DEPLOYMENT_KEY > id_rsa",
+    "scp -i id_rsa ./docker-compose.yml $DEPLOYMENT_USER@$DEPLOYMENT_HOST:/home/$DEPLOYMENT_USER/stack.yml",
+    "ssh -i id_rsa $DEPLOYMENT_USER@$DEPLOYMENT_HOST 'docker stack deploy -c stack.yml '"
+  ]
 }
