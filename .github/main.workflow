@@ -29,7 +29,7 @@ action "Publish" {
 }
 
 action "Deploy" {
-  needs = ["Publish"]
+  # needs = ["Publish"]
   uses = "docker://simonvadee/action-shell:latest"
   secrets = ["DO_AUTH_TOKEN", "DEPLOYMENT_KEY", "DEPLOYMENT_USER"]
   args = [
