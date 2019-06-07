@@ -32,8 +32,12 @@ action "Deploy" {
   # needs = ["Publish"]
   uses = "docker://simonvadee/action-shell:latest"
   secrets = ["DO_AUTH_TOKEN", "DEPLOYMENT_KEY", "DEPLOYMENT_USER"]
+  env = {
+    TEST = "`cat ops/cluster.tfstate | jq -r '.resources[] | select(.type == \"digitalocean_droplet\") | .instances[] | select(.attributes.name == \"leader1\") | .attributes.ipv4_address'`"
+  }
   args = [
     ". ops/configure_ci.sh",
+    "cat ops/cluster.tfstate | jq -r '.resources[] | select(.type == \"digitalocean_droplet\") | .instances[] | select(.attributes.name == \"leader1\") | .attributes.ipv4_address'",
     "export DEPLOYMENT_HOST=`cat ops/cluster.tfstate | jq -r '.resources[] | select(.type == \"digitalocean_droplet\") | .instances[] | select(.attributes.name == \"leader1\") | .attributes.ipv4_address'`",
     "env",
     "scp -o StrictHostKeyChecking=no -v -i id_rsa ./docker-compose.yml $DEPLOYMENT_USER@$DEPLOYMENT_HOST:/home/$DEPLOYMENT_USER/stack.yml",
