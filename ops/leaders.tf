@@ -35,7 +35,8 @@ resource "digitalocean_droplet" "leader1" {
   provisioner "remote-exec" {
     inline = [
       # Init the swarm cluster
-      "docker swarm init --advertise-addr ${digitalocean_droplet.leader1.ipv4_address_private} --listen-addr ${digitalocean_droplet.leader1.ipv4_address}"
+      "docker swarm init --advertise-addr ${digitalocean_droplet.leader1.ipv4_address}",
+      "docker network create --driver=overlay traefik-net"
     ]
   }
 }
