@@ -3,6 +3,7 @@
 variable "do_token" {}
 variable "ssh_key" {}
 variable "ssh_fingerprint" {}
+variable "ci_ssh_fingerprint" {}
 variable "ssh_user" {}
 
 # Configure the DigitalOcean Provider
@@ -18,7 +19,8 @@ resource "digitalocean_droplet" "leader1" {
   size               = "s-1vcpu-1gb"
   private_networking = true
   ssh_keys = [
-    "${var.ssh_fingerprint}"
+    "${var.ssh_fingerprint}",
+    "${var.ci_ssh_fingerprint}"
   ]
 
   connection {

@@ -38,4 +38,5 @@ provision:
 		-var "ssh_key=${DIGITALOCEAN_SSH_KEY_PATH}" \
 		-var "ssh_user=${DIGITALOCEAN_SSH_USER}" \
 		-var "ssh_fingerprint=${DIGITALOCEAN_SSH_KEY_FINGERPRINT}" \
+		-var "ci_ssh_fingerprint=${DIGITALOCEAN_CI_SSH_KEY_FINGERPRINT}" \
 		-state ops/cluster.tfstate ops
