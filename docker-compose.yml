@@ -8,8 +8,7 @@ services:
       - '443:443' # The HTTPS port
       - '8080:8080' # The Web UI (enabled by --api)
     environment:
-      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
-      - CLOUDFLARE_API_KEY=${CLOUDFLARE_API_KEY}
+      - DO_AUTH_TOKEN=${DO_AUTH_TOKEN}
     networks:
       - default
       - traefik-net
@@ -26,7 +25,7 @@ services:
       labels:
         - traefik.port=80
         - traefik.docker.network=traefik-net
-        - traefik.frontend.rule=Host:${SWARMON_WHOAMI_HOST}
+        - traefik.frontend.rule=Host:whoami.swarmon.vadee.xyz
 
   api:
     image: simonvadee/swarmon-api:latest
@@ -37,7 +36,7 @@ services:
       labels:
         - traefik.port=8080
         - traefik.docker.network=traefik-net
-        - traefik.frontend.rule=Host:${SWARMON_API_HOST}
+        - traefik.frontend.rule=Host:api.swarmon.vadee.xyz
 
 networks:
   traefik-net:

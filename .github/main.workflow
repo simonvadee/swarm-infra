@@ -31,9 +31,9 @@ action "Publish" {
 action "Deploy" {
   needs = ["Publish"]
   uses = "docker://simonvadee/action-shell:latest"
-  secrets = ["DEPLOYMENT_KEY", "DEPLOYMENT_USER", "DEPLOYMENT_HOST"]
+  secrets = ["DO_AUTH_TOKEN", "DEPLOYMENT_KEY", "DEPLOYMENT_USER"]
   args = [
-    "echo $DEPLOYMENT_KEY | base64 -d > id_rsa && chmod 400 id_rsa",
+    "source ops/configure_ci.sh",
     "scp -o StrictHostKeyChecking=no -v -i id_rsa ./docker-compose.yml $DEPLOYMENT_USER@$DEPLOYMENT_HOST:/home/$DEPLOYMENT_USER/stack.yml",
     "scp -o StrictHostKeyChecking=no -v -i id_rsa ./traefik.toml $DEPLOYMENT_USER@$DEPLOYMENT_HOST:/home/$DEPLOYMENT_USER/traefik.toml",
     "ssh -o StrictHostKeyChecking=no -i id_rsa $DEPLOYMENT_USER@$DEPLOYMENT_HOST 'docker stack deploy -c stack.yml swarmon'"

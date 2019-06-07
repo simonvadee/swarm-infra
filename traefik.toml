@@ -14,13 +14,12 @@ defaultEntryPoints = ["http", "https"]
     [entryPoints.https.tls]
 
 [acme]
-    caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
     email = "simon.vadee@gmail.com"
     storage = "acme.json"
     entryPoint = "https"
     acmeLogging = true
     [acme.dnsChallenge]
-        provider = "cloudflare" # DNS Provider name (cloudflare, OVH, gandi...)
+        provider = "digitalocean" # DNS Provider name (cloudflare, OVH, gandi...)
         delayBeforeCheck = 0
 
     [[acme.domains]]
