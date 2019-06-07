@@ -22,7 +22,7 @@ action "Filter" {
 }
 
 action "Publish" {
-  needs = ["Filter"]
+  needs = ["Build"]
   uses = "docker://simonvadee/action-make-docker:latest"
   runs = "make"
   args = "publish"
@@ -36,6 +36,6 @@ action "Deploy" {
     "source ops/configure_ci.sh",
     "scp -o StrictHostKeyChecking=no -v -i id_rsa ./docker-compose.yml $DEPLOYMENT_USER@$DEPLOYMENT_HOST:/home/$DEPLOYMENT_USER/stack.yml",
     "scp -o StrictHostKeyChecking=no -v -i id_rsa ./traefik.toml $DEPLOYMENT_USER@$DEPLOYMENT_HOST:/home/$DEPLOYMENT_USER/traefik.toml",
-    "ssh -o StrictHostKeyChecking=no -i id_rsa $DEPLOYMENT_USER@$DEPLOYMENT_HOST 'docker stack deploy -c stack.yml swarmon'"
+    "ssh -o StrictHostKeyChecking=no -i id_rsa $DEPLOYMENT_USER@$DEPLOYMENT_HOST -o SendEnv=DO_AUTH_TOKEN 'stack deploy -c stack.yml swarmon'"
   ]
 }
