@@ -10,19 +10,23 @@ services:
     environment:
       - DO_AUTH_TOKEN=${DO_AUTH_TOKEN}
     networks:
-      - default
       - traefik-net
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
     volumes:
       - ./traefik.toml:/etc/traefik/traefik.toml
       - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+      - /opt/traefik/acme.json:/acme.json
 
   whoami:
     image: containous/whoami # A container that exposes an API to show its IP address
     networks:
-      - default
       - traefik-net
     deploy:
       labels:
+        - traefik.backend.loadbalancer.swarm=true
         - traefik.port=80
         - traefik.docker.network=traefik-net
         - traefik.frontend.rule=Host:whoami.swarmon.vadee.xyz
@@ -30,10 +34,10 @@ services:
   api:
     image: simonvadee/swarmon-api:latest
     networks:
-      - default
       - traefik-net
     deploy:
       labels:
+        - traefik.backend.loadbalancer.swarm=true
         - traefik.port=8080
         - traefik.docker.network=traefik-net
         - traefik.frontend.rule=Host:api.swarmon.vadee.xyz

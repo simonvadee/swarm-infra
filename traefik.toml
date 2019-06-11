@@ -14,6 +14,7 @@ defaultEntryPoints = ["http", "https"]
     [entryPoints.https.tls]
 
 [acme]
+    caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
     email = "simon.vadee@gmail.com"
     storage = "acme.json"
     entryPoint = "https"
@@ -24,9 +25,11 @@ defaultEntryPoints = ["http", "https"]
 
     [[acme.domains]]
         main = "vadee.xyz"
+        sans = ["api.swarmon.vadee.xyz", "whoami.swarmon.vadee.xyz"]
     [[acme.domains]]
         main = "*.vadee.xyz"
 
 [docker]
     endpoint = "unix:///var/run/docker.sock"
     swarmMode = true
+    network = "traefik-net"

@@ -34,8 +34,11 @@ resource "digitalocean_droplet" "leader1" {
   # Configure the provisioned machine
   provisioner "remote-exec" {
     inline = [
+      "sudo mkdir /opt/traefik",
+      "sudo touch /opt/traefik/acme.json",
+      "sudo chmod 600 /opt/traefik/acme.json",
       # Init the swarm cluster
-      "docker swarm init --advertise-addr ${digitalocean_droplet.leader1.ipv4_address}",
+      "docker swarm init --advertise-addr ${digitalocean_droplet.leader1.ipv4_address_private}",
       "docker network create --driver=overlay traefik-net"
     ]
   }

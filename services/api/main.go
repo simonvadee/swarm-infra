@@ -24,6 +24,7 @@ func (a *API) home(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 		return
 	}
 
+	// b := []byte("ok")
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
 }
