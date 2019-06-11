@@ -22,7 +22,7 @@ action "Filter" {
 }
 
 action "Publish" {
-  needs = ["Build"]
+  needs = ["Filter"]
   uses = "docker://simonvadee/action-make-docker:latest"
   runs = "make"
   args = "publish"
