@@ -44,3 +44,7 @@ destroy:
 		-var "do_token=${DIGITALOCEAN_ACCESS_TOKEN}" \
 		-var-file=ops/variables.tfvars \
 		-state ops/cluster.tfstate ops
+
+# == connect ====================================================================
+connect:
+	ssh rancher@`./ops/leader_host.sh`
