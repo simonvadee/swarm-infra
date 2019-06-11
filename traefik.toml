@@ -20,14 +20,16 @@ defaultEntryPoints = ["http", "https"]
     entryPoint = "https"
     acmeLogging = true
     [acme.dnsChallenge]
-        provider = "cloudflare" # DNS Provider name (cloudflare, OVH, gandi...)
+        provider = "digitalocean" # DNS Provider name (cloudflare, OVH, gandi...)
         delayBeforeCheck = 0
 
     [[acme.domains]]
         main = "vadee.xyz"
+        sans = ["api.swarmon.vadee.xyz", "whoami.swarmon.vadee.xyz"]
     [[acme.domains]]
         main = "*.vadee.xyz"
 
 [docker]
     endpoint = "unix:///var/run/docker.sock"
     swarmMode = true
+    network = "traefik-net"
