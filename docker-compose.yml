@@ -32,7 +32,7 @@ services:
         - traefik.frontend.rule=Host:whoami.swarmon.vadee.xyz
 
   api:
-    image: simonvadee/swarmon-api:latest
+    image: simonvadee/swarmon-api:${GITHUB_SHA}
     networks:
       - traefik-net
     deploy:
