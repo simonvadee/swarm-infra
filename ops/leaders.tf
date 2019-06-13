@@ -23,12 +23,30 @@ resource "digitalocean_droplet" "leader1" {
     "${var.ci_ssh_fingerprint}"
   ]
 
+  # Configure the SSH daemon so it accepts setting environment variables.
+  user_data = <<EOF
+#cloud-config
+write_files:
+- content: |+
+    PrintMotd no
+    AcceptEnv LANG LC_*
+    Subsystem sftp /usr/lib/openssh/sftp-server
+    ClientAliveInterval 180
+    UseDNS no
+    PermitRootLogin no
+    AllowGroups docker
+    AcceptEnv GITHUB_SHA
+  owner: root
+  path: /etc/ssh/sshd_config
+  permissions: "0600"
+  EOF
+
   connection {
-    host        = "${self.ipv4_address}"
-    user        = "${var.ssh_user}"
-    type        = "ssh"
+    host = "${self.ipv4_address}"
+    user = "${var.ssh_user}"
+    type = "ssh"
     private_key = "${file(var.ssh_key)}"
-    timeout     = "2m"
+    timeout = "2m"
   }
 
   # Configure the provisioned machine
