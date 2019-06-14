@@ -1,9 +1,12 @@
 debug=true
 defaultEntryPoints = ["http", "https"]
 
-[api]
 
 [entryPoints]
+
+  [entryPoints.dashboard]
+    address = ":5000"
+
   [entryPoints.http]
     address = ":80"
     [entryPoints.http.redirect]
@@ -13,19 +16,21 @@ defaultEntryPoints = ["http", "https"]
      address = ":443"
     [entryPoints.https.tls]
 
+[api]
+    entryPoint = "dashboard"
+
 [acme]
-    caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
     email = "simon.vadee@gmail.com"
     storage = "acme.json"
     entryPoint = "https"
     acmeLogging = true
     [acme.dnsChallenge]
         provider = "digitalocean" # DNS Provider name (cloudflare, OVH, gandi...)
-        delayBeforeCheck = 0
+        delayBeforeCheck = 30
 
     [[acme.domains]]
         main = "vadee.xyz"
-        sans = ["api.swarmon.vadee.xyz", "whoami.swarmon.vadee.xyz"]
+        sans = ["api.swarmon.vadee.xyz", "whoami.swarmon.vadee.xyz", "db.swarmon.vadee.xyz", "db-ui.swarmon.vadee.xyz"]
     [[acme.domains]]
         main = "*.vadee.xyz"
 

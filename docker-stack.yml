@@ -1,0 +1,156 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    image: traefik # The official Traefik docker image
+    ports:
+      - '80:80' # The HTTP port
+      - '443:443' # The HTTPS port
+      - '5000:5000' # The Web UI (enabled by --api)
+    environment:
+      - DO_AUTH_TOKEN=${DO_AUTH_TOKEN}
+    networks:
+      - traefik-net
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - ./traefik.toml:/etc/traefik/traefik.toml
+      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+      - /opt/traefik/acme.json:/acme.json
+
+  whoami:
+    image: containous/whoami # A container that exposes an API to show its IP address
+    networks:
+      - traefik-net
+    deploy:
+      labels:
+        - traefik.backend.loadbalancer.swarm=true
+        - traefik.port=80
+        - traefik.docker.network=traefik-net
+        - traefik.frontend.rule=Host:whoami.swarmon.vadee.xyz
+
+  api:
+    image: simonvadee/swarmon-api:${GITHUB_SHA}
+    networks:
+      - traefik-net
+    deploy:
+      labels:
+        - traefik.backend.loadbalancer.swarm=true
+        - traefik.port=8080
+        - traefik.docker.network=traefik-net
+        - traefik.frontend.rule=Host:api.swarmon.vadee.xyz
+
+  # DATABASE
+
+  zero:
+    image: dgraph/dgraph:latest
+    volumes:
+      - db-data:/dgraph
+    ports:
+      - 5080:5080
+      - 6080:6080
+    networks:
+      - dgraph
+    deploy:
+      labels:
+        - traefik.enable=false
+      placement:
+        constraints:
+          - node.hostname == leader1
+    command: dgraph zero --my=zero:5080 --replicas 3
+  alpha_1:
+    image: dgraph/dgraph:latest
+    hostname: 'alpha_1'
+    volumes:
+      - db-data:/dgraph
+    ports:
+      - 7080:7080
+      - 8080:8080
+      - 9080:9080
+    networks:
+      - dgraph
+      - traefik-net
+    deploy:
+      labels:
+        - traefik.backend.loadbalancer.swarm=true
+        - traefik.port=8080
+        - traefik.docker.network=traefik-net
+        - traefik.frontend.rule=Host:db.swarmon.vadee.xyz
+      placement:
+        constraints:
+          - node.hostname == leader1
+    command: dgraph alpha --my=alpha_1:7080 --lru_mb=2048 --zero=zero:5080
+    depends_on:
+      - zero
+  alpha_2:
+    image: dgraph/dgraph:latest
+    hostname: 'alpha_2'
+    volumes:
+      - db-data:/dgraph
+    ports:
+      - 7081:7081
+      - 8081:8081
+      - 9081:9081
+    networks:
+      - dgraph
+    deploy:
+      labels:
+        - traefik.enable=false
+      placement:
+        constraints:
+          - node.hostname == docker-swarm-worker-0
+    command: dgraph alpha --my=alpha_2:7081 --lru_mb=2048 --zero=zero:5080 -o 1
+    depends_on:
+      - zero
+  alpha_3:
+    image: dgraph/dgraph:latest
+    hostname: 'alpha_3'
+    volumes:
+      - db-data:/dgraph
+    ports:
+      - 7082:7082
+      - 8082:8082
+      - 9082:9082
+    networks:
+      - dgraph
+    deploy:
+      labels:
+        - traefik.enable=false
+      placement:
+        constraints:
+          - node.hostname == docker-swarm-worker-1
+    command: dgraph alpha --my=alpha_3:7082 --lru_mb=2048 --zero=zero:5080 -o 2
+    depends_on:
+      - zero
+  ratel:
+    image: dgraph/dgraph:latest
+    hostname: 'ratel'
+    ports:
+      - 8000:8000
+    networks:
+      - dgraph
+      - traefik-net
+    command: dgraph-ratel
+    deploy:
+      labels:
+        - traefik.backend.loadbalancer.swarm=true
+        - traefik.port=8000
+        - traefik.docker.network=traefik-net
+        - traefik.frontend.rule=Host:db-ui.swarmon.vadee.xyz
+      placement:
+        constraints:
+          - node.hostname == leader1
+
+# NETWORKS
+
+networks:
+  traefik-net:
+    external: true
+  dgraph:
+
+# VOLUMES
+
+volumes:
+  db-data:
