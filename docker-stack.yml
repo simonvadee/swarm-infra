@@ -19,6 +19,8 @@ services:
       - ./traefik.toml:/etc/traefik/traefik.toml
       - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
       - /opt/traefik/acme.json:/acme.json
+      - /opt/traefik/access.log:/access.log
+      - /opt/traefik/traefik.log:/traefik.log
 
   whoami:
     image: containous/whoami # A container that exposes an API to show its IP address

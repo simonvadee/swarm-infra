@@ -1,6 +1,11 @@
-debug=true
+logLevel = "INFO"
 defaultEntryPoints = ["http", "https"]
 
+[accessLog]
+  filePath = "access.log"
+
+[traefikLog]
+  filePath = "traefik.log"
 
 [entryPoints]
 
