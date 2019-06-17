@@ -1,15 +1,9 @@
 # Set the variable value in *.tfvars file
 # or using -var="do_token=..." CLI option
-variable "do_token" {}
 variable "ssh_key" {}
 variable "ssh_fingerprint" {}
 variable "ci_ssh_fingerprint" {}
 variable "ssh_user" {}
-
-# Configure the DigitalOcean Provider
-provider "digitalocean" {
-  token = "${var.do_token}"
-}
 
 # Swarm leader
 resource "digitalocean_droplet" "leader1" {

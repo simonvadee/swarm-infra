@@ -35,6 +35,7 @@ $(PUBLISH_IMAGES): publish_docker_image_%: %/Dockerfile
 provision:
 	terraform apply \
 		-var "do_token=${DIGITALOCEAN_ACCESS_TOKEN}" \
+		-var "cloudflare_token=${CLOUDFLARE_ACCESS_TOKEN}" \
 		-var-file=ops/variables.tfvars \
 		-state ops/cluster.tfstate ops
 
@@ -42,6 +43,7 @@ provision:
 destroy:
 	terraform destroy \
 		-var "do_token=${DIGITALOCEAN_ACCESS_TOKEN}" \
+		-var "cloudflare_token=${CLOUDFLARE_ACCESS_TOKEN}" \
 		-var-file=ops/variables.tfvars \
 		-state ops/cluster.tfstate ops
 
