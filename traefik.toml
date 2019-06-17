@@ -6,6 +6,8 @@ defaultEntryPoints = ["http", "https"]
 
   [entryPoints.dashboard]
     address = ":5000"
+    [entryPoints.dashboard.auth.digest]
+        users = ["admin:traefik:a7f9d8497b8ec887429be5792b070d87"]
 
   [entryPoints.http]
     address = ":80"
