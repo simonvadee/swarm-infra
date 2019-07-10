@@ -32,20 +32,32 @@ $(PUBLISH_IMAGES): publish_docker_image_%: %/Dockerfile
 
 
 # == provision ====================================================================
-provision:
+provision_do:
 	terraform apply \
 		-var "do_token=${DIGITALOCEAN_ACCESS_TOKEN}" \
 		-var "cloudflare_token=${CLOUDFLARE_ACCESS_TOKEN}" \
-		-var-file=ops/variables.tfvars \
-		-state ops/cluster.tfstate ops
+		-state ops/cluster.tfstate ops/digitalocean
+
+provision_sw:
+	terraform apply \
+		-var "sw_token=${SCALEWAY_TOKEN}" \
+		-var "sw_org_id=${SCALEWAY_ORGANISATION_ID}" \
+		-var "cloudflare_token=${CLOUDFLARE_ACCESS_TOKEN}" \
+		-state ops/cluster.tfstate ops/scaleway
 
 # == destroy ====================================================================
-destroy:
+destroy_do:
 	terraform destroy \
 		-var "do_token=${DIGITALOCEAN_ACCESS_TOKEN}" \
 		-var "cloudflare_token=${CLOUDFLARE_ACCESS_TOKEN}" \
-		-var-file=ops/variables.tfvars \
-		-state ops/cluster.tfstate ops
+		-state ops/cluster.tfstate ops/digitalocean
+
+destroy_sw:
+	terraform destroy \
+		-var "sw_token=${SCALEWAY_TOKEN}" \
+		-var "sw_org_id=${SCALEWAY_ORGANISATION_ID}" \
+		-var "cloudflare_token=${CLOUDFLARE_ACCESS_TOKEN}" \
+		-state ops/cluster.tfstate ops/scaleway
 
 # == connect ====================================================================
 connect:

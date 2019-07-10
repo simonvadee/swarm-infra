@@ -25,7 +25,7 @@ resource "digitalocean_droplet" "docker_swarm_worker" {
 }
 
 data "external" "swarm_join_token" {
-  program = ["ops/get-join-tokens.sh"]
+  program = ["ops/scripts/get-join-tokens.sh"]
   query = {
     host = "${digitalocean_droplet.leader1.ipv4_address}"
   }
