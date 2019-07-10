@@ -28,6 +28,7 @@ data "external" "swarm_join_token" {
   program = ["ops/scripts/get-join-tokens.sh"]
   query = {
     host = "${digitalocean_droplet.leader1.ipv4_address}"
+    user = "${var.ssh_user}"
   }
   depends_on = ["digitalocean_droplet.leader1"]
 }

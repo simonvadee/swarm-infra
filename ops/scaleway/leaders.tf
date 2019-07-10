@@ -15,7 +15,7 @@ resource "scaleway_server" "swarm_manager" {
   connection {
     host = "${self.public_ip}"
     type = "ssh"
-    user = "root"
+    user = "${var.ssh_user}"
     private_key = "${file("~/.ssh/id_rsa")}"
     timeout = "2m"
   }

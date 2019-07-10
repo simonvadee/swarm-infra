@@ -17,7 +17,7 @@ resource "scaleway_server" "swarm_worker" {
   connection {
     host = "${self.public_ip}"
     type = "ssh"
-    user = "root"
+    user = "${var.ssh_user}"
     private_key = "${file("~/.ssh/id_rsa")}"
   }
 
@@ -56,7 +56,7 @@ resource "scaleway_server" "swarm_worker" {
 
     connection {
       type = "ssh"
-      user = "root"
+      user = "${var.ssh_user}"
       host = "${scaleway_ip.swarm_manager_ip.0.ip}"
     }
   }
@@ -82,7 +82,7 @@ resource "scaleway_server" "swarm_worker" {
 
     connection {
       type = "ssh"
-      user = "root"
+      user = "${var.ssh_user}"
       host = "${scaleway_ip.swarm_manager_ip.0.ip}"
     }
   }
@@ -93,6 +93,7 @@ data "external" "swarm_tokens" {
 
   query = {
     host = "${scaleway_ip.swarm_manager_ip.0.ip}"
+    user = "${var.ssh_user}"
   }
 
   depends_on = ["scaleway_server.swarm_manager"]

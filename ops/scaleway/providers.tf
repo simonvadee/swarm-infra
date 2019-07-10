@@ -9,7 +9,7 @@ provider "scaleway" {
 }
 data "scaleway_bootscript" "debian" {
   architecture = "x86_64"
-  name_filter = "x86_64 mainline 4.14.128 rev1"
+  name = "x86_64 mainline 4.14.128 rev1"
 }
 
 data "scaleway_image" "debian_stretch" {
